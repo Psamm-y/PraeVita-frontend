@@ -61,9 +61,12 @@ export function Navigation({ user, onLogout }: NavigationProps) {
       <div className="max-w-7xl mx-auto px-4">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-2">
-            <Activity className="h-6 w-6" />
-            <span className="font-bold">Ghana Health Alert</span>
+          <Link to="/" className="flex items-center ">
+            {/* <Activity className="h-6 w-6" /> */}
+            <div className='w-10 h-10'>
+              <img src="praevita-notext.png" className='w-full h-full object-contain'/>
+              </div>
+            <span className=" text-white font-boldonse ">Prae<span className='text-[#7cbd49]'>Vita</span></span>
           </Link>
 
           {/* Desktop Navigation */}
