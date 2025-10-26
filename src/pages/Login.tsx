@@ -70,7 +70,7 @@ export function Login({ onLogin, onRegister }: LoginProps) {
 
           {error && (
             <div className="mb-4 p-3 border-2 border-red-500 bg-red-50 flex items-start gap-2">
-              <AlertCircle className="h-5 w-5 text-red-500 flex-shrink-0 mt-0.5" />
+              <AlertCircle className="h-5 w-5 text-red-500 shrink-0 mt-0.5" />
               <span className="text-sm">{error}</span>
             </div>
           )}

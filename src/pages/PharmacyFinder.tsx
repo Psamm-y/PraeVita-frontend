@@ -102,8 +102,8 @@ export function PharmacyFinder() {
                   onClick={handleSearch}
                   className="px-6 py-3 bg-black text-white hover:bg-gray-800 transition-colors flex items-center gap-2"
                 >
-                  <Search className="h-5 w-5" />
-                  <span>Search</span>
+                  <Search className="h-5 w-5 " />
+                  <span className='hidden md:block '>Search</span>
                 </button>
               </div>
             </div>
@@ -181,7 +181,7 @@ export function PharmacyFinder() {
                           <h3 className="text-xl font-bold mb-2">{result.pharmacy.name}</h3>
                           
                           <div className="flex items-start gap-2 text-sm mb-2">
-                            <MapPin className="h-4 w-4 flex-shrink-0 mt-0.5" />
+                            <MapPin className="h-4 w-4 shrink-0 mt-0.5" />
                             <span>{result.pharmacy.address}, {result.pharmacy.region}</span>
                           </div>
 

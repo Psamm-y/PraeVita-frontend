@@ -17,7 +17,7 @@ import { updatePredictions } from './predictions';
 export function initializeApp(): void {
   // Check if already initialized
   const users = getFromStorage(STORAGE_KEYS.USERS, []);
-  
+
   if (users.length > 0) {
     // Already initialized
     return;

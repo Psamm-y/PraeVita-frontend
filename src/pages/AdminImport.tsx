@@ -136,7 +136,7 @@ export function AdminImport() {
 
         {success && (
           <div className="mb-6 p-4 border-2 border-green-500 bg-green-50 flex items-start gap-3">
-            <CheckCircle className="h-5 w-5 text-green-500 flex-shrink-0 mt-0.5" />
+            <CheckCircle className="h-5 w-5 text-green-500 shrink-0 mt-0.5" />
             <div>
               <p className="font-bold">Import Successful!</p>
               <p className="text-sm">
@@ -149,7 +149,7 @@ export function AdminImport() {
         {errors.length > 0 && (
           <div className="mb-6 p-4 border-2 border-red-500 bg-red-50">
             <div className="flex items-start gap-3">
-              <AlertCircle className="h-5 w-5 text-red-500 flex-shrink-0 mt-0.5" />
+              <AlertCircle className="h-5 w-5 text-red-500 shrink-0 mt-0.5" />
               <div>
                 <p className="font-bold mb-2">Validation Errors:</p>
                 <ul className="list-disc list-inside space-y-1 text-sm">

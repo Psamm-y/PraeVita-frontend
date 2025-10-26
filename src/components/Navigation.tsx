@@ -66,7 +66,7 @@ export function Navigation({ user, onLogout }: NavigationProps) {
             <div className='w-10 h-10'>
               <img src="praevita-notext.png" className='w-full h-full object-contain'/>
               </div>
-            <span className=" text-white font-boldonse ">Prae<span className='text-[#7cbd49]'>Vita</span></span>
+            <span className=" text-white font-boldonse text-xl font-bold">Prae<span className='text-[#7cbd49]'>Vita</span></span>
           </Link>
 
           {/* Desktop Navigation */}

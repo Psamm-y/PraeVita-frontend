@@ -164,7 +164,7 @@ export function SymptomTracker() {
         {errors.length > 0 && (
           <div className="mb-6 p-4 border-2 border-red-500 bg-red-50">
             <div className="flex items-start gap-3">
-              <AlertCircle className="h-5 w-5 text-red-500 flex-shrink-0 mt-0.5" />
+              <AlertCircle className="h-5 w-5 text-red-500 shrink-0 mt-0.5" />
               <div>
                 <p className="font-bold mb-2">Please fix the following errors:</p>
                 <ul className="list-disc list-inside space-y-1">
@@ -298,7 +298,7 @@ export function SymptomTracker() {
                 type="checkbox"
                 checked={termsAccepted}
                 onChange={(e) => setTermsAccepted(e.target.checked)}
-                className="w-5 h-5 mt-1 flex-shrink-0"
+                className="w-5 h-5 mt-1 shrink-0"
               />
               <div>
                 <span className="font-bold">

@@ -1,10 +1,16 @@
 /*! tailwindcss v4.1.3 | MIT License | https://tailwindcss.com */
 @import url('https://fonts.googleapis.com/css2?family=Boldonse&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Caprasimo&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&display=swap');
 @import 'tailwindcss';
 @theme {
-  --font-boldonse: 'Boldonse', sans-serif;
+  /* --font-boldonse: 'Boldonse', sans-serif; */
   /* --font-boldonse: 'Caprasimo', sans-serif; */
+  --font-boldonse: 'Bricolage Grotesque', sans-serif;
+}
+body,
+html {
+  font-family: 'Bricolage Grotesque', sans-serif;
 }
 @layer properties {
   @supports (((-webkit-hyphens: none)) and (not (margin-trim: inline))) or
@@ -707,9 +713,9 @@
     flex: 1;
   }
 
-  .flex-shrink-0 {
+  /* .flex-shrink-0 {
     flex-shrink: 0;
-  }
+  } */
 
   .-translate-y-1\/2 {
     --tw-translate-y: calc(calc(1 / 2 * 100%) * -1);

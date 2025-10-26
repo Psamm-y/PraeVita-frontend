@@ -8,6 +8,8 @@ import { PredictionsCache, SymptomReport, Pharmacy, BlogPost } from '../utils/ty
 import { RiskPercentage } from '../components/RiskBadge';
 import { updatePredictions } from '../utils/predictions';
 import { format } from 'date-fns';
+import Counter from '../utils/counter';
+import DiseaseMap from '../components/ui/diseaseMap';
 
 export function HomePage() {
   const [predictions, setPredictions] = useState<PredictionsCache | null>(null);
@@ -89,7 +91,7 @@ export function HomePage() {
             icon={<TrendingUp className="h-8 w-8" />}
             label="Symptom Reports"
             value={stats.totalReports}
-            subtitle="Last 30 days"
+            subtitle="~Last 30 days"
           />
           <StatCard
             icon={<Building2 className="h-8 w-8" />}
@@ -116,9 +118,9 @@ export function HomePage() {
         {stats.highRiskRegions > 0 && (
           <div className="mb-8 p-4 border-2 border-red-500 bg-red-50">
             <div className="flex items-start gap-3">
-              <AlertTriangle className="h-6 w-6 text-red-500 flex-shrink-0 mt-1" />
+              <AlertTriangle className="h-6 w-6 text-red-500 shrink-0 mt-1" />
               <div>
-                <h3 className="font-bold text-lg mb-1">⚠️ High Risk Alert</h3>
+                <h3 className="font-bold text-lg mb-1"> High Risk Alert</h3>
                 <p className="text-gray-700">
                   {stats.highRiskRegions} region{stats.highRiskRegions > 1 ? 's' : ''} currently showing high outbreak probability (≥70%). 
                   Please review the regional data below and take preventive measures.
@@ -131,7 +133,7 @@ export function HomePage() {
         {/* Regional Outbreak Tables */}
         <div className="mb-8">
           <h2 className="text-2xl font-bold mb-4">Regional Outbreak Risk Assessment</h2>
-          
+          <DiseaseMap/>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Typhoid Table */}
             <div className="border-2 border-black">
@@ -198,21 +200,21 @@ export function HomePage() {
           <h3 className="font-bold text-lg mb-4">Risk Level Legend</h3>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="flex items-center gap-3">
-              <div className="w-12 h-12 bg-[#10B981] flex-shrink-0"></div>
+              <div className="w-12 h-12 bg-[#10B981] shrink-0"></div>
               <div>
                 <div className="font-bold">Low Risk (&lt;30%)</div>
                 <div className="text-sm text-gray-600">Continue preventive measures</div>
               </div>
             </div>
             <div className="flex items-center gap-3">
-              <div className="w-12 h-12 bg-[#FBBF24] flex-shrink-0"></div>
+              <div className="w-12 h-12 bg-[#FBBF24] shrink-0"></div>
               <div>
                 <div className="font-bold">Medium Risk (30-69%)</div>
                 <div className="text-sm text-gray-600">Exercise caution</div>
               </div>
             </div>
             <div className="flex items-center gap-3">
-              <div className="w-12 h-12 bg-[#EF4444] flex-shrink-0"></div>
+              <div className="w-12 h-12 bg-[#EF4444] shrink-0"></div>
               <div>
                 <div className="font-bold">High Risk (≥70%)</div>
                 <div className="text-sm text-gray-600">Immediate action needed</div>
@@ -254,11 +256,13 @@ interface StatCardProps {
 
 function StatCard({ icon, label, value, subtitle, alert }: StatCardProps) {
   return (
-    <div className={`p-6 border-2 ${alert ? 'border-red-500 bg-red-50' : 'border-black'}`}>
+    <div className={`p-6 border-2 ${alert ? 'border-red-500 bg-red-50' : 'border-black'} rounded-xl cursor-pointer bg-blue-200/20`}>
       <div className="flex items-start justify-between mb-3">
         <div className={alert ? 'text-red-500' : 'text-black'}>{icon}</div>
       </div>
-      <div className={`text-3xl font-bold mb-1 ${alert ? 'text-red-500' : ''}`}>{value.toLocaleString()}</div>
+      <div className={`text-3xl font-bold mb-1 ${alert ? 'text-red-500' : ''}`}>
+      <Counter from={0} to={value}/>  
+      </div>
       <div className="font-bold mb-1">{label}</div>
       <div className="text-sm text-gray-600">{subtitle}</div>
     </div>
