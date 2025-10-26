@@ -9,9 +9,14 @@ import { RiskPercentage } from '../components/RiskBadge';
 import { updatePredictions } from '../utils/predictions';
 import { format } from 'date-fns';
 import Counter from '../utils/counter';
-import DiseaseMap from '../components/ui/diseaseMap';
+import DiseaseMap, { DiseaseData } from '../components/ui/diseaseMap';
+import GroupedBarChart from '../components/ui/GroupedBarChart';
+import { REGION_COORDINATES } from '../data/regionCoordinates';
 
 export function HomePage() {
+  // diseasePoints will be derived from the predictions cache and used for the map
+  const [diseasePoints, setDiseasePoints] = useState<DiseaseData[]>([]);
+
   const [predictions, setPredictions] = useState<PredictionsCache | null>(null);
   const [stats, setStats] = useState({
     totalReports: 0,
@@ -35,6 +40,29 @@ export function HomePage() {
     }
     
     setPredictions(predictionsData);
+
+    // Build map points from predictions cache
+    if (predictionsData) {
+      const points: DiseaseData[] = predictionsData.regions
+        .map(r => {
+          const coords = REGION_COORDINATES[r.region];
+          if (!coords) return null;
+
+          // Normalize severity to a 0-10 scale (used by DiseaseMap for coloring)
+          const avgProb = (r.typhoid + r.cholera) / 2; // 0 - 100
+          const severity = Math.max(1, Math.round(avgProb / 10));
+
+          return {
+            lat: coords.lat,
+            lng: coords.lng,
+            severity,
+            name: r.region
+          } as DiseaseData;
+        })
+        .filter(Boolean) as DiseaseData[];
+
+      setDiseasePoints(points);
+    }
 
     // Load statistics
     const symptoms = getFromStorage<SymptomReport[]>(STORAGE_KEYS.SYMPTOMS, []);
@@ -134,8 +162,16 @@ export function HomePage() {
         <div className="mb-8">
           <h2 className="text-2xl font-bold mb-4">Regional Outbreak Risk Assessment</h2>
           <div className=' border-2 border-blue-500 mb-10 rounded-xl overflow-hidden'>
-            <DiseaseMap />
+            <DiseaseMap diseaseData={diseasePoints}/>
             </div>
+
+          {/* Grouped bar chart: Typhoid vs Cholera by region */}
+          <div className="mb-8">
+            <GroupedBarChart
+              data={predictions.regions.map(r => ({ region: r.region, typhoid: Math.round(r.typhoid), cholera: Math.round(r.cholera) }))}
+              height={320}
+            />
+          </div>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Typhoid Table */}
             <div className="border-2 border-black">

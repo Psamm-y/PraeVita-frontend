@@ -22,12 +22,12 @@ function calculateSymptomScore(
   disease: Disease
 ): number {
   const weights = disease === 'typhoid' ? TYPHOID_SYMPTOMS : CHOLERA_SYMPTOMS;
-  
+
   let score = 0;
   symptoms.forEach(symptom => {
     score += weights[symptom] || 0;
   });
-  
+
   // Multiply by severity factor (1-5 scale, normalized)
   return score * (severity / 3);
 }
@@ -39,7 +39,7 @@ function getRecentSymptoms(region: GhanaRegion, days: number): SymptomReport[] {
   const allSymptoms = getFromStorage<SymptomReport[]>(STORAGE_KEYS.SYMPTOMS, []);
   const cutoffDate = new Date();
   cutoffDate.setDate(cutoffDate.getDate() - days);
-  
+
   return allSymptoms.filter(s => {
     return s.region === region && new Date(s.submittedAt) >= cutoffDate;
   });
@@ -51,11 +51,11 @@ function getRecentSymptoms(region: GhanaRegion, days: number): SymptomReport[] {
 function calculateClimateFactor(region: GhanaRegion, disease: Disease): number {
   const climate = CLIMATE_DATA[region];
   let factor = 0;
-  
+
   if (disease === 'cholera') {
     // Cholera thrives in wet conditions with contaminated water
     factor = (climate.annualRainfall / 2000) * 20;
-    
+
     const waterBodyFactors: Record<WaterBodyProximity, number> = {
       'very high': 15,
       'high': 10,
@@ -66,7 +66,7 @@ function calculateClimateFactor(region: GhanaRegion, disease: Disease): number {
   } else if (disease === 'typhoid') {
     // Typhoid spreads through contaminated food/water, worse in heat
     factor = (climate.avgTemperature / 30) * 15;
-    
+
     const waterBodyFactors: Record<WaterBodyProximity, number> = {
       'very high': 8,
       'high': 8,
@@ -75,7 +75,7 @@ function calculateClimateFactor(region: GhanaRegion, disease: Disease): number {
     };
     factor += waterBodyFactors[climate.waterBodies];
   }
-  
+
   return factor;
 }
 
@@ -84,19 +84,19 @@ function calculateClimateFactor(region: GhanaRegion, disease: Disease): number {
  */
 function calculateHistoricalRisk(region: GhanaRegion, disease: Disease): number {
   const historicalData = getFromStorage<HistoricalData[]>(STORAGE_KEYS.HISTORICAL_DATA, []);
-  
+
   const relevantOutbreaks = historicalData.filter(
     h => h.region === region && h.disease.toLowerCase() === disease
   );
-  
+
   if (relevantOutbreaks.length === 0) {
     return 0;
   }
-  
+
   // Calculate average incidence rate
   const totalCases = relevantOutbreaks.reduce((sum, h) => sum + h.confirmedCases, 0);
   const avgCases = totalCases / relevantOutbreaks.length;
-  
+
   // Normalize to 0-100 scale (100 cases = 10 points)
   return Math.min(20, (avgCases / 10));
 }
@@ -110,24 +110,24 @@ export function calculateOutbreakProbability(
 ): number {
   // 1. Get recent symptoms (last 30 days)
   const recentSymptoms = getRecentSymptoms(region, 30);
-  
+
   if (recentSymptoms.length === 0) {
     // No recent data, base on climate and history only
     const climateFactor = calculateClimateFactor(region, disease);
     const historicalRisk = calculateHistoricalRisk(region, disease);
     return Math.min(100, Math.max(0, Math.round(climateFactor + historicalRisk)));
   }
-  
+
   // 2. Calculate symptom density (reports per 100,000 population)
   const population = POPULATION_DATA[region];
   const symptomDensity = (recentSymptoms.length / population) * 100000;
-  
+
   // 3. Calculate disease-specific symptom scores
   const diseaseScores = recentSymptoms.map(s =>
     calculateSymptomScore(s.symptoms, s.severity, disease)
   );
   const avgDiseaseScore = diseaseScores.reduce((a, b) => a + b, 0) / diseaseScores.length;
-  
+
   // 4. Calculate trend (increasing or decreasing reports)
   const last7Days = getRecentSymptoms(region, 7);
   const previous7Days = getRecentSymptoms(region, 14).filter(s => {
@@ -136,15 +136,15 @@ export function calculateOutbreakProbability(
     sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
     return date < sevenDaysAgo;
   });
-  
+
   const trend = last7Days.length > previous7Days.length ? 1.2 : 0.8;
-  
+
   // 5. Factor in climate data
   const climateFactor = calculateClimateFactor(region, disease);
-  
+
   // 6. Factor in historical outbreak patterns
   const historicalRisk = calculateHistoricalRisk(region, disease);
-  
+
   // 7. Combine all factors with weights
   const probability =
     symptomDensity * 0.35 +      // 35% weight on current symptoms
@@ -152,7 +152,7 @@ export function calculateOutbreakProbability(
     climateFactor * 0.20 +        // 20% weight on climate
     historicalRisk * 0.10 +       // 10% weight on history
     (trend * 5);                  // 10% weight on trend
-  
+
   // 8. Normalize to 0-100 scale
   return Math.min(100, Math.max(0, Math.round(probability)));
 }
@@ -162,7 +162,7 @@ export function calculateOutbreakProbability(
  */
 export function calculateAllPredictions(): RegionalPrediction[] {
   const regions = Object.keys(POPULATION_DATA) as GhanaRegion[];
-  
+
   return regions.map(region => ({
     region,
     typhoid: calculateOutbreakProbability(region, 'typhoid'),
@@ -203,13 +203,13 @@ export function getRiskLevel(probability: number): RiskInfo {
  */
 export function updatePredictions(): RegionalPrediction[] {
   const predictions = calculateAllPredictions();
-  
+
   const cache = {
     lastUpdated: new Date().toISOString(),
     regions: predictions
   };
-  
+
   saveToStorage(STORAGE_KEYS.PREDICTIONS, cache);
-  
+
   return predictions;
 }
