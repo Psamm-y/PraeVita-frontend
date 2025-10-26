@@ -12,10 +12,12 @@ import Counter from '../utils/counter';
 import DiseaseMap, { DiseaseData } from '../components/ui/diseaseMap';
 import GroupedBarChart from '../components/ui/GroupedBarChart';
 import { REGION_COORDINATES } from '../data/regionCoordinates';
+import { AnimatePresence, motion } from 'framer-motion';
 
 export function HomePage() {
   // diseasePoints will be derived from the predictions cache and used for the map
-  const [diseasePoints, setDiseasePoints] = useState<DiseaseData[]>([]);
+  const [typhoidPoints, setTyphoidPoints] = useState<DiseaseData[]>([]);
+  const [choleraPoints, setCholeraPoints] = useState<DiseaseData[]>([]);
 
   const [predictions, setPredictions] = useState<PredictionsCache | null>(null);
   const [stats, setStats] = useState({
@@ -43,14 +45,12 @@ export function HomePage() {
 
     // Build map points from predictions cache
     if (predictionsData) {
-      const points: DiseaseData[] = predictionsData.regions
+      const tPoints: DiseaseData[] = predictionsData.regions
         .map(r => {
           const coords = REGION_COORDINATES[r.region];
           if (!coords) return null;
 
-          // Normalize severity to a 0-10 scale (used by DiseaseMap for coloring)
-          const avgProb = (r.typhoid + r.cholera) / 2; // 0 - 100
-          const severity = Math.max(1, Math.round(avgProb / 10));
+          const severity = Math.max(1, Math.round(r.typhoid / 10));
 
           return {
             lat: coords.lat,
@@ -61,7 +61,24 @@ export function HomePage() {
         })
         .filter(Boolean) as DiseaseData[];
 
-      setDiseasePoints(points);
+      const cPoints: DiseaseData[] = predictionsData.regions
+        .map(r => {
+          const coords = REGION_COORDINATES[r.region];
+          if (!coords) return null;
+
+          const severity = Math.max(1, Math.round(r.cholera / 10));
+
+          return {
+            lat: coords.lat,
+            lng: coords.lng,
+            severity,
+            name: r.region
+          } as DiseaseData;
+        })
+        .filter(Boolean) as DiseaseData[];
+
+      setTyphoidPoints(tPoints);
+      setCholeraPoints(cPoints);
     }
 
     // Load statistics
@@ -162,7 +179,7 @@ export function HomePage() {
         <div className="mb-8">
           <h2 className="text-2xl font-bold mb-4">Regional Outbreak Risk Assessment</h2>
           <div className=' border-2 border-blue-500 mb-10 rounded-xl overflow-hidden'>
-            <DiseaseMap diseaseData={diseasePoints}/>
+            <DiseaseMap typhoidData={typhoidPoints} choleraData={choleraPoints} />
             </div>
 
           {/* Grouped bar chart: Typhoid vs Cholera by region */}
@@ -294,7 +311,9 @@ interface StatCardProps {
 
 function StatCard({ icon, label, value, subtitle, alert }: StatCardProps) {
   return (
-    <div className={`p-6 border-2 ${alert ? 'border-red-500 bg-red-50' : 'border-black'} rounded-xl cursor-pointer bg-blue-200/20`}>
+    <AnimatePresence>
+    <motion.div
+      className={`p-6 border-2 ${alert ? 'border-red-500 bg-red-50' : 'border-black'} rounded-xl cursor-pointer bg-blue-200/20`}>
       <div className="flex items-start justify-between mb-3">
         <div className={alert ? 'text-red-500' : 'text-black'}>{icon}</div>
       </div>
@@ -303,6 +322,7 @@ function StatCard({ icon, label, value, subtitle, alert }: StatCardProps) {
       </div>
       <div className="font-bold mb-1">{label}</div>
       <div className="text-sm text-gray-600">{subtitle}</div>
-    </div>
+      </motion.div>
+      </AnimatePresence>
   );
 }

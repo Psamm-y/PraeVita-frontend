@@ -22,8 +22,8 @@ export function Navigation({ user, onLogout }: NavigationProps) {
 
   const publicLinks = [
     { to: '/', label: 'Dashboard' },
-    { to: '/symptoms', label: 'Report Symptoms' },
-    { to: '/pharmacy-finder', label: 'Find Pharmacy' },
+    // { to: '/symptoms', label: 'Report Symptoms' },
+    { to: '/find-health-facility', label: 'Find Health Facility' },
     { to: '/blog', label: 'Health Blog' }
   ];
 

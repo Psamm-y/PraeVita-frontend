@@ -38,7 +38,7 @@ function App() {
           {/* Public Routes */}
           <Route path="/" element={<HomePage />} />
           <Route path="/symptoms" element={<SymptomTracker />} />
-          <Route path="/pharmacy-finder" element={<PharmacyFinder />} />
+          <Route path="/find-health-facility" element={<PharmacyFinder />} />
           <Route path="/blog" element={<Blog />} />
           <Route path="/blog/:id" element={<Blog />} />
           

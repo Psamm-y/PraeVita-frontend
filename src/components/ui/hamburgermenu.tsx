@@ -1,14 +1,13 @@
 "use client"
 import React, { useState } from 'react'
 interface HamburgerProps{
-  handleOpen:(open:boolean)=>void
+  open: boolean
 }
-const Hamburger = ({handleOpen}:HamburgerProps) => {
+const Hamburger = ({open}:HamburgerProps) => {
   const [expanded, setExpanded] = useState<boolean>(false)
   const toggle = () => {
     setExpanded(prev => {
       const nextState = !prev;
-      handleOpen(nextState);
       return nextState;
    })
   }

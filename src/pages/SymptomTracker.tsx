@@ -142,7 +142,7 @@ export function SymptomTracker() {
               View Dashboard
             </button>
             <button
-              onClick={() => navigate('/pharmacy-finder')}
+              onClick={() => navigate('/find-health-facility')}
               className="px-6 py-3 border-2 border-black hover:bg-gray-100 transition-colors"
             >
               Find Pharmacy
