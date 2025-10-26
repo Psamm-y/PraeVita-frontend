@@ -9,6 +9,7 @@ import { initializeApp } from './utils/initialize';
 import { HomePage } from './pages/HomePage';
 import { SymptomTracker } from './pages/SymptomTracker';
 import { PharmacyFinder } from './pages/PharmacyFinder';
+import { Profile } from './pages/Profile';
 import { Blog } from './pages/Blog';
 import { Login } from './pages/Login';
 import { PharmacyDashboard } from './pages/PharmacyDashboard';
@@ -39,6 +40,16 @@ function App() {
           <Route path="/" element={<HomePage />} />
           <Route path="/symptoms" element={<SymptomTracker />} />
           <Route path="/find-health-facility" element={<PharmacyFinder />} />
+          <Route
+            path="/profile"
+            element={
+              user ? (
+                <Profile />
+              ) : (
+                <Navigate to="/login" replace />
+              )
+            }
+          />
           <Route path="/blog" element={<Blog />} />
           <Route path="/blog/:id" element={<Blog />} />
           
