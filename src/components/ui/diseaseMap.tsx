@@ -12,16 +12,17 @@ export default function DiseaseMap() {
     <MapContainer center={[7.9465, -1.0232]} zoom={7} style={{ height: "500px", width: "100%" }}>
       <TileLayer
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-        attribution=" OpenStreetMap contributors"
+        attribution="© OpenStreetMap contributors"
       />
+
       {diseaseData.map((point, i) => (
         <CircleMarker
           key={i}
           center={[point.lat, point.lng]}
-          radius={10}
+          radius={5}
           pathOptions={{
             color: point.severity > 6 ? 'red' : point.severity > 3 ? 'orange' : 'green',
-            fillOpacity: 0.6
+            fillOpacity: 1
           }}
         >
           <Tooltip>{`${point.name}: Severity ${point.severity}`}</Tooltip>

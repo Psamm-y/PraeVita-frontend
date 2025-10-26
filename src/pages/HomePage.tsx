@@ -133,7 +133,9 @@ export function HomePage() {
         {/* Regional Outbreak Tables */}
         <div className="mb-8">
           <h2 className="text-2xl font-bold mb-4">Regional Outbreak Risk Assessment</h2>
-          <DiseaseMap/>
+          <div className=' border-2 border-blue-500 mb-10 rounded-xl overflow-hidden'>
+            <DiseaseMap />
+            </div>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Typhoid Table */}
             <div className="border-2 border-black">
@@ -261,7 +263,7 @@ function StatCard({ icon, label, value, subtitle, alert }: StatCardProps) {
         <div className={alert ? 'text-red-500' : 'text-black'}>{icon}</div>
       </div>
       <div className={`text-3xl font-bold mb-1 ${alert ? 'text-red-500' : ''}`}>
-      <Counter from={0} to={value}/>  
+      <Counter from={100} to={value}/>  
       </div>
       <div className="font-bold mb-1">{label}</div>
       <div className="text-sm text-gray-600">{subtitle}</div>
