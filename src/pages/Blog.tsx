@@ -99,7 +99,7 @@ function BlogList() {
                     {post.content.substring(0, 150)}...
                   </p>
 
-                  <div className="text-sm font-bold">Read More →</div>
+                  <div className="text-sm font-bold text-vita">Read More →</div>
                 </div>
               </Link>
             ))}

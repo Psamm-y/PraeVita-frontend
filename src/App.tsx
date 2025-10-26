@@ -9,6 +9,8 @@ import { initializeApp } from './utils/initialize';
 import { HomePage } from './pages/HomePage';
 import { SymptomTracker } from './pages/SymptomTracker';
 import { PharmacyFinder } from './pages/PharmacyFinder';
+import { HealthFacilityOnboarding } from './pages/HealthFacilityOnboarding';
+import { HealthFacilityDashboard } from './pages/HealthFacilityDashboard';
 import { Profile } from './pages/Profile';
 import { Blog } from './pages/Blog';
 import { Login } from './pages/Login';
@@ -23,7 +25,7 @@ import { AdminBlog } from './pages/AdminBlog';
 import { AdminPharmacies } from './pages/AdminPharmacies';
 
 function App() {
-  const { user, login, logout, register } = useAuth();
+  const { user, login, logout, register, facility } = useAuth();
 
   useEffect(() => {
     // Initialize app with sample data on first load
@@ -33,13 +35,22 @@ function App() {
   return (
     <BrowserRouter>
       <div className="min-h-screen bg-white">
-        <Navigation user={user} onLogout={logout} />
+  <Navigation user={user} facility={facility} onLogout={logout} />
         
         <Routes>
           {/* Public Routes */}
           <Route path="/" element={<HomePage />} />
           <Route path="/symptoms" element={<SymptomTracker />} />
           <Route path="/find-health-facility" element={<PharmacyFinder />} />
+          <Route path="/facility/onboard" element={<HealthFacilityOnboarding />} />
+          <Route
+            path="/facility/dashboard"
+            element={
+              <ProtectedRoute user={user} requiredRole="facility">
+                {user && <HealthFacilityDashboard />}
+              </ProtectedRoute>
+            }
+          />
           <Route
             path="/profile"
             element={

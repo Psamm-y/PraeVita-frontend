@@ -4,7 +4,7 @@ import { GhanaRegion } from '../data/regions';
 import { Symptom, AgeGroup } from '../data/symptoms';
 
 // User roles
-export type UserRole = 'user' | 'pharmacy' | 'admin';
+export type UserRole = 'user' | 'pharmacy' | 'facility' | 'admin';
 
 // User interface
 export interface User {
@@ -66,6 +66,32 @@ export interface Pharmacy {
   inventory: Medication[];
   createdAt: string;
   status: 'active' | 'inactive';
+}
+
+// Health facility interface (used for onboarding/verification)
+export interface HealthFacility {
+  id: string;
+  name: string;
+  username: string; // linked to a User with role 'facility'
+  region: GhanaRegion;
+  address: string;
+  phone?: string;
+  email?: string;
+  operatingHours?: string;
+  createdAt: string;
+  status: 'pending' | 'active' | 'suspended';
+}
+
+// Confirmed case report submitted by verified health facilities
+export interface FacilityReport {
+  id: string;
+  facilityId: string;
+  facilityName: string;
+  region: GhanaRegion;
+  disease: 'typhoid' | 'cholera';
+  confirmedCases: number;
+  reportedAt: string; // ISO date
+  notes?: string;
 }
 
 // Blog post status

@@ -23,7 +23,7 @@ export function setCurrentUser(user: User | null): void {
  */
 export function login(username: string, password: string): User | null {
   const users = getFromStorage<User[]>(STORAGE_KEYS.USERS, []);
-  
+
   const user = users.find(u => u.username === username);
   if (!user) {
     return null;
@@ -37,16 +37,16 @@ export function login(username: string, password: string): User | null {
   const { password: _, ...userWithoutPassword } = user;
   const currentUser = { ...user, password: user.password }; // Keep for session
   setCurrentUser(currentUser);
-  
+
   return currentUser;
 }
 
 /**
  * Register new public user
  */
-export function register(username: string, email: string, password: string): User | null {
+export function register(username: string, email: string, password: string, role: UserRole = 'user'): User | null {
   const users = getFromStorage<User[]>(STORAGE_KEYS.USERS, []);
-  
+
   // Check if username or email already exists
   if (users.some(u => u.username === username || u.email === email)) {
     return null;
@@ -57,14 +57,14 @@ export function register(username: string, email: string, password: string): Use
     username,
     email,
     password: hashPassword(password),
-    role: 'user',
+    role,
     createdAt: new Date().toISOString()
   };
 
   users.push(newUser);
   saveToStorage(STORAGE_KEYS.USERS, users);
   setCurrentUser(newUser);
-  
+
   return newUser;
 }
 

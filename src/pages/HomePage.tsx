@@ -13,6 +13,7 @@ import DiseaseMap, { DiseaseData } from '../components/ui/diseaseMap';
 import GroupedBarChart from '../components/ui/GroupedBarChart';
 import { REGION_COORDINATES } from '../data/regionCoordinates';
 import { AnimatePresence, motion } from 'framer-motion';
+import Footer from '../components/ui/footer';
 
 export function HomePage() {
   // diseasePoints will be derived from the predictions cache and used for the map
@@ -279,7 +280,7 @@ export function HomePage() {
         </div>
 
         {/* Call to Action */}
-        <div className="bg-black text-white p-8 text-center">
+        {/* <div className="bg-black text-white p-8 text-center">
           <h2 className="text-2xl font-bold mb-4">Help Us Track and Prevent Outbreaks</h2>
           <p className="mb-6 text-gray-300">
             Your anonymous symptom reports help predict and prevent disease outbreaks in your community
@@ -290,13 +291,15 @@ export function HomePage() {
           >
             Report Symptoms Now
           </Link>
-        </div>
+        </div> */}
 
         {/* Last Updated */}
         <div className="mt-6 text-center text-sm text-gray-600">
           Last Updated: {format(new Date(predictions.lastUpdated), 'PPpp')}
         </div>
+        
       </div>
+      <Footer />
     </div>
   );
 }
@@ -312,7 +315,8 @@ interface StatCardProps {
 function StatCard({ icon, label, value, subtitle, alert }: StatCardProps) {
   return (
     <AnimatePresence>
-    <motion.div
+      <motion.div
+        
       className={`p-6 border-2 ${alert ? 'border-red-500 bg-red-50' : 'border-black'} rounded-xl cursor-pointer bg-blue-200/20`}>
       <div className="flex items-start justify-between mb-3">
         <div className={alert ? 'text-red-500' : 'text-black'}>{icon}</div>

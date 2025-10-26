@@ -1,6 +1,6 @@
 // Sample data for testing and demonstration
 
-import { User, Pharmacy, SymptomReport, BlogPost, HistoricalData } from '../utils/types';
+import { User, Pharmacy, SymptomReport, BlogPost, HistoricalData, HealthFacility, FacilityReport } from '../utils/types';
 import { hashPassword } from '../utils/encryption';
 import { generateAnonymousId, encryptData } from '../utils/encryption';
 
@@ -30,7 +30,59 @@ export function getSampleUsers(): User[] {
       role: 'user',
       createdAt: '2025-10-01T00:00:00Z'
     }
+    ,
+    {
+      id: 'facility1',
+      username: 'cityclinic',
+      password: hashPassword('clinic123'),
+      email: 'cityclinic@health.gh',
+      role: 'facility',
+      createdAt: '2025-10-20T00:00:00Z'
+    }
+    ,
+    {
+      id: 'facility2',
+      username: 'wellness',
+      password: hashPassword('well123'),
+      email: 'wellness@pharmacy.gh',
+      role: 'facility',
+      createdAt: '2025-10-10T00:00:00Z'
+    }
   ];
+}
+
+export function getSampleHealthFacilities(): HealthFacility[] {
+  return [
+    {
+      id: 'fac1',
+      name: 'City Clinic',
+      username: 'cityclinic',
+      region: 'Greater Accra',
+      address: 'Korle Bu Road, Accra',
+      phone: '+233 24 555 0101',
+      email: 'cityclinic@health.gh',
+      operatingHours: 'Mon-Fri: 8AM-5PM',
+      createdAt: '2025-10-20T00:00:00Z',
+      status: 'active'
+    }
+    ,
+    {
+      id: 'fac2',
+      name: 'Wellness Pharmacy (Verified Facility)',
+      username: 'wellness',
+      region: 'Central',
+      address: 'Cape Coast, Central Region',
+      phone: '+233 33 345 6789',
+      email: 'wellness@pharmacy.gh',
+      operatingHours: '24/7',
+      createdAt: '2025-09-10T00:00:00Z',
+      status: 'active'
+    }
+  ];
+}
+
+export function getSampleFacilityReports(): FacilityReport[] {
+  return [];
 }
 
 export function getSamplePharmacies(): Pharmacy[] {

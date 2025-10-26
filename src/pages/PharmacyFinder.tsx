@@ -77,10 +77,10 @@ export function PharmacyFinder() {
                 />
                 <button
                   onClick={handleSearch}
-                  className="px-6 py-3 bg-black text-white hover:bg-gray-800 transition-colors flex items-center gap-2"
+                  className="px-6 py-3 bg-vita text-white hover:bg-gray-800 transition-colors flex items-center gap-2"
                 >
                   <Search className="h-5 w-5 " />
-                  <span className='hidden md:block '>Search</span>
+                  {/* <span className='hidden '>Search</span> */}
                 </button>
               </div>
             </div>

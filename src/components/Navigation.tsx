@@ -4,13 +4,15 @@ import { Link, useNavigate } from 'react-router-dom';
 import { User } from '../utils/types';
 import { Menu, X, Activity } from 'lucide-react';
 import { useState } from 'react';
+import { capitalise } from '../utils/helper';
 
 interface NavigationProps {
   user: User | null;
+  facility?: import('../utils/types').HealthFacility | null;
   onLogout: () => void;
 }
 
-export function Navigation({ user, onLogout }: NavigationProps) {
+export function Navigation({ user, facility, onLogout }: NavigationProps) {
   const navigate = useNavigate();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -37,6 +39,11 @@ export function Navigation({ user, onLogout }: NavigationProps) {
     { to: '/pharmacy/inventory', label: 'Inventory' }
   ];
 
+  const facilityLinks = [
+    { to: '/facility/dashboard', label: 'Dashboard' },
+    { to: '/facility/onboard', label: 'Onboarding' }
+  ];
+
   const adminLinks = [
     { to: '/admin/dashboard', label: 'Dashboard' },
     { to: '/admin/data', label: 'Data Management' },
@@ -51,6 +58,14 @@ export function Navigation({ user, onLogout }: NavigationProps) {
       links = adminLinks;
     } else if (user.role === 'pharmacy') {
       links = pharmacyLinks;
+    } else if (user.role === 'facility') {
+      // Only show facility dashboard link for active facilities; otherwise show onboarding/profile links
+      if (facility && facility.status === 'active') {
+        links = facilityLinks;
+      } else {
+        // facility logged in but not active yet
+        links = [...userLinks, { to: '/facility/onboard', label: 'Facility Onboarding' }];
+      }
     } else {
       links = userLinks;
     }
@@ -83,9 +98,12 @@ export function Navigation({ user, onLogout }: NavigationProps) {
             
             {user ? (
               <div className="flex items-center gap-4 ml-4 pl-4 border-l border-white">
+                <div className='flex gap-2 items-center'>
                 <span className="text-sm">
-                  {user.username} ({user.role})
-                </span>
+                  {capitalise(user.username)} <br /> ({user.role})
+                  </span>
+                <div className=' bg-blue-200 text-black p-2 px-4 rounded-full font-bold cursor-pointer'>{capitalise(user.username[0])}</div>
+                  </div>
                 <button
                   onClick={handleLogout}
                   className="px-4 py-2 bg-white text-black hover:bg-gray-200 transition-colors"
