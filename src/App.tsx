@@ -17,7 +17,7 @@ import { Login } from './pages/Login';
 import { PharmacyDashboard } from './pages/PharmacyDashboard';
 import { PharmacyInventory } from './pages/PharmacyInventory';
 import { AdminDashboard } from './pages/AdminDashboard';
-import { Report } from './pages/Report';
+import Report from './pages/Report';
 
 // Placeholder components for remaining admin pages
 import { AdminDataManagement } from './pages/AdminDataManagement';
