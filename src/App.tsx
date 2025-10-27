@@ -17,13 +17,13 @@ import { Login } from './pages/Login';
 import { PharmacyDashboard } from './pages/PharmacyDashboard';
 import { PharmacyInventory } from './pages/PharmacyInventory';
 import { AdminDashboard } from './pages/AdminDashboard';
-import  Report  from './pages/Report';
 
 // Placeholder components for remaining admin pages
 import { AdminDataManagement } from './pages/AdminDataManagement';
 import { AdminImport } from './pages/AdminImport';
 import { AdminBlog } from './pages/AdminBlog';
 import { AdminPharmacies } from './pages/AdminPharmacies';
+import Report from './pages/Report';
 
 function App() {
   const { user, login, logout, register, facility } = useAuth();
