@@ -17,6 +17,7 @@ import { Login } from './pages/Login';
 import { PharmacyDashboard } from './pages/PharmacyDashboard';
 import { PharmacyInventory } from './pages/PharmacyInventory';
 import { AdminDashboard } from './pages/AdminDashboard';
+import { Report } from './pages/Report';
 
 // Placeholder components for remaining admin pages
 import { AdminDataManagement } from './pages/AdminDataManagement';
@@ -35,8 +36,8 @@ function App() {
   return (
     <BrowserRouter>
       <div className="min-h-screen bg-white">
-  <Navigation user={user} facility={facility} onLogout={logout} />
-        
+        <Navigation user={user} facility={facility} onLogout={logout} />
+
         <Routes>
           {/* Public Routes */}
           <Route path="/" element={<HomePage />} />
@@ -63,7 +64,8 @@ function App() {
           />
           <Route path="/blog" element={<Blog />} />
           <Route path="/blog/:id" element={<Blog />} />
-          
+          <Route path="/report" element={<Report />} />
+
           {/* Login Route */}
           <Route
             path="/login"
@@ -74,8 +76,8 @@ function App() {
                     user.role === 'admin'
                       ? '/admin/dashboard'
                       : user.role === 'pharmacy'
-                      ? '/pharmacy/dashboard'
-                      : '/'
+                        ? '/pharmacy/dashboard'
+                        : '/'
                   }
                   replace
                 />

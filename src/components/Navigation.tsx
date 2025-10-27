@@ -4,7 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { User } from '../utils/types';
 import { Menu, X, Activity } from 'lucide-react';
 import { useState } from 'react';
-import { capitalise } from '../utils/helper';
+import { capitalise, backend_url } from '../utils/helper';
 
 interface NavigationProps {
   user: User | null;
@@ -15,6 +15,7 @@ interface NavigationProps {
 export function Navigation({ user, facility, onLogout }: NavigationProps) {
   const navigate = useNavigate();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [generating, setGenerating] = useState(false);
 
   const handleLogout = () => {
     onLogout();
@@ -26,7 +27,8 @@ export function Navigation({ user, facility, onLogout }: NavigationProps) {
     { to: '/', label: 'Dashboard' },
     // { to: '/symptoms', label: 'Report Symptoms' },
     { to: '/find-health-facility', label: 'Find Health Facility' },
-    { to: '/blog', label: 'Health Blog' }
+    { to: '/blog', label: 'Health Blog' },
+    { to: '/report', label: 'Latest Report' }
   ];
 
   const userLinks = [
@@ -79,9 +81,9 @@ export function Navigation({ user, facility, onLogout }: NavigationProps) {
           <Link to="/" className="flex items-center ">
             {/* <Activity className="h-6 w-6" /> */}
             <div className='w-10 h-10'>
-              <img src="praevita-notext.png" className='w-full h-full object-contain'/>
-              </div>
-            <span className=" text-white font-boldonse text-xl font-bold">Prae<span className='text-[#7cbd49]'>Vita</span></span>
+              <img src="praevita-notext.png" className='w-full h-full object-contain' />
+            </div>
+            <span className=" text-white font-boldonse text-xl font-bold">Prae<span className='text-vita'>Vita</span></span>
           </Link>
 
           {/* Desktop Navigation */}
@@ -95,21 +97,63 @@ export function Navigation({ user, facility, onLogout }: NavigationProps) {
                 {link.label}
               </Link>
             ))}
-            
+
             {user ? (
               <div className="flex items-center gap-4 ml-4 pl-4 border-l border-white">
                 <div className='flex gap-2 items-center'>
-                <span className="text-sm">
-                  {capitalise(user.username)} <br /> ({user.role})
+                  <span className="text-sm">
+                    {capitalise(user.username)} <br /> ({user.role})
                   </span>
-                <div className=' bg-blue-200 text-black p-2 px-4 rounded-full font-bold cursor-pointer'>{capitalise(user.username[0])}</div>
-                  </div>
-                <button
-                  onClick={handleLogout}
-                  className="px-4 py-2 bg-white text-black hover:bg-gray-200 transition-colors"
-                >
-                  Logout
-                </button>
+                  <div className=' bg-blue-200 text-black h-8 w-8 flex justify-center items-center rounded-full font-bold cursor-pointer'>{capitalise(user.username[0])}</div>
+                </div>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={async () => {
+                      // If there's no backend URL configured, fall back to the local /report page
+                      if (!backend_url) {
+                        navigate('/report');
+                        return;
+                      }
+
+                      try {
+                        setGenerating(true);
+                        const res = await fetch(`${backend_url}/generate-comprehensive-report`, {
+                          method: 'POST',
+                          headers: {
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json'
+                          }
+                        });
+                        if (!res.ok) throw new Error(`Status ${res.status}`);
+                        const data = await res.json().catch(() => null);
+                        // If backend returns a download URL, open it. Otherwise notify success.
+                        if (data && (data.url || data.report_url)) {
+                          const url = data.url || data.report_url;
+                          window.open(url, '_blank');
+                        } else {
+                          alert('Report generation request submitted successfully.');
+                        }
+                      } catch (err) {
+                        console.error('Generate report failed', err);
+                        // On failure, fall back to opening the client-side report page so the user still gets something useful
+                        navigate('/report');
+                      } finally {
+                        setGenerating(false);
+                      }
+                    }}
+                    className="px-3 py-2 bg-vita text-black hover:brightness-90 transition-colors cursor-pointer"
+                    disabled={generating}
+                  >
+                    {generating ? 'Generating...' : 'Generate Report'}
+                  </button>
+
+                  <button
+                    onClick={handleLogout}
+                    className="px-4 py-2 bg-white text-black hover:bg-gray-200 transition-colors"
+                  >
+                    Logout
+                  </button>
+                </div>
               </div>
             ) : (
               <Link
@@ -143,12 +187,45 @@ export function Navigation({ user, facility, onLogout }: NavigationProps) {
                 {link.label}
               </Link>
             ))}
-            
+
             {user ? (
               <>
                 <div className="py-2 text-sm border-t border-white mt-2 pt-2">
                   {user.username} ({user.role})
                 </div>
+                <button
+                  onClick={async () => {
+                    // If no backend is configured, open the client-side report page instead
+                    if (!backend_url) {
+                      setMobileMenuOpen(false);
+                      navigate('/report');
+                      return;
+                    }
+
+                    try {
+                      setGenerating(true);
+                      const res = await fetch(`${backend_url}/generate-comprehensive-report`, {
+                        method: 'POST',
+                        headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' }
+                      });
+                      if (!res.ok) throw new Error(`Status ${res.status}`);
+                      const data = await res.json().catch(() => null);
+                      if (data && (data.url || data.report_url)) window.open(data.url || data.report_url, '_blank');
+                      else alert('Report generation request submitted successfully.');
+                    } catch (err) {
+                      console.error('Generate report failed', err);
+                      // Fallback to client-side report page so users still get the report
+                      setMobileMenuOpen(false);
+                      navigate('/report');
+                    } finally {
+                      setGenerating(false);
+                    }
+                  }}
+                  className="w-full mt-2 px-4 py-2 bg-[#7cbd49] text-black hover:brightness-90 transition-colors"
+                >
+                  {generating ? 'Generating...' : 'Generate Report'}
+                </button>
+
                 <button
                   onClick={handleLogout}
                   className="w-full mt-2 px-4 py-2 bg-white text-black hover:bg-gray-200 transition-colors"

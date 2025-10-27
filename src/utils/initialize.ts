@@ -48,6 +48,27 @@ export function initializeApp(): void {
     saveToStorage(STORAGE_KEYS.PHARMACIES, getSamplePharmacies());
   }
 
+  // Ensure sample pharmacy users exist so pharmacy credentials (e.g., medplus) can login
+  try {
+    const pharmacies = getFromStorage<any[]>(STORAGE_KEYS.PHARMACIES, []);
+    const usersList = getFromStorage<any[]>(STORAGE_KEYS.USERS, []);
+    pharmacies.forEach(ph => {
+      if (!usersList.some(u => u.username === ph.username)) {
+        usersList.push({
+          id: ph.id ? `user_${ph.id}` : `user_ph_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`,
+          username: ph.username,
+          password: ph.password, // already hashed in sampleData
+          email: ph.email || '',
+          role: 'pharmacy',
+          createdAt: ph.createdAt || new Date().toISOString()
+        });
+      }
+    });
+    saveToStorage(STORAGE_KEYS.USERS, usersList);
+  } catch (e) {
+    // ignore
+  }
+
   // Ensure sample health facility and facility user exist for testing
   try {
     const existingFacilities = getFromStorage<import('../utils/types').HealthFacility[]>(STORAGE_KEYS.HEALTH_FACILITIES, []);

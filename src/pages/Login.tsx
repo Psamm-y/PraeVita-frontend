@@ -130,7 +130,7 @@ export function Login({ onLogin, onRegister }: LoginProps) {
 
             <button
               type="submit"
-              className="w-full py-3 bg-black text-white hover:bg-gray-800 transition-colors font-bold"
+              className="w-full py-3 bg-black text-white hover:bg-gray-800 transition-colors font-bold cursor-pointer"
             >
               {mode === 'login' ? 'Login' : 'Create Account'}
             </button>
@@ -171,12 +171,16 @@ export function Login({ onLogin, onRegister }: LoginProps) {
               <p className="text-sm font-bold mb-3">Demo Accounts:</p>
               <div className="space-y-2 text-xs bg-gray-50 p-3">
                 <div>
+                  <div className="font-bold">User:</div>
+                  <div>Username: psammy / Password: psammyyy</div>
+                </div>
+                <div>
                   <div className="font-bold">Admin:</div>
                   <div>Username: admin / Password: admin123</div>
                 </div>
                 <div>
-                  <div className="font-bold">Pharmacy:</div>
-                  <div>Username: medplus / Password: medplus123</div>
+                  <div className="font-bold">Health Facility:</div>
+                  <div>Username: wellness / Password: well123</div>
                 </div>
                 <div className="text-gray-600 mt-2">
                   Or register a new public user account above
